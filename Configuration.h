@@ -69,9 +69,9 @@
 // 301 = Rambo
 // 21 = Elefu Ra Board (v3)
 
-#ifndef MOTHERBOARD
+//#ifndef MOTHERBOARD
 #define MOTHERBOARD 301
-#endif
+//#endif
 
 // Define this to set a custom name for your generic Mendel,
 // #define CUSTOM_MENDEL_NAME "This Mendel"
