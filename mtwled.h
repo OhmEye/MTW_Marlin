@@ -26,6 +26,8 @@ void MTWLEDTemp();
 #define mtwled_ready		2	// Marlin Ready
 #define mtwled_startup		5	// Marlin startup
 #define mtwled_tempready	8	// Hotend is at requested temp
+#define mtwled_heateron		9	// Hotend heater is on
+#define mtwled_heateroff	10	// Hotend heater is off
 #define mtwled_printdone	13	// Print Finished
 
 /*
