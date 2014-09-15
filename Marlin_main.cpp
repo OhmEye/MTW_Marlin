@@ -53,6 +53,10 @@
 #include "Wire.h"
 #endif
 
+#ifdef MTWLED
+#include "mtwled.h"
+#endif
+
 #if NUM_SERVOS > 0
 #include "Servo.h"
 #endif
@@ -481,6 +485,10 @@ void setup()
 
   #if defined(CONTROLLERFAN_PIN) && CONTROLLERFAN_PIN > -1
     SET_OUTPUT(CONTROLLERFAN_PIN); //Set pin used for driver cooling fan
+  #endif
+
+  #ifdef MTWLED
+    MTWLEDUpdate(mtwled_startup);
   #endif
 }
 

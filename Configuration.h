@@ -69,9 +69,9 @@
 // 301 = Rambo
 // 21 = Elefu Ra Board (v3)
 
-//#ifndef MOTHERBOARD
+#ifndef MOTHERBOARD
 #define MOTHERBOARD 301
-//#endif
+#endif
 
 // Define this to set a custom name for your generic Mendel,
 // #define CUSTOM_MENDEL_NAME "This Mendel"
@@ -642,6 +642,13 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 //
 //#define SERVO_ENDSTOPS {-1, -1, 0} // Servo index for X, Y, Z. Disable with -1
 //#define SERVO_ENDSTOP_ANGLES {0,0, 0,0, 70,0} // X,Y,Z Axis Extend and Retract angles
+
+/*********************************************************************\
+* MTW LED I2C controller support
+* Sponsored by Makers Tool Works
+**********************************************************************/
+
+#define MTWLED
 
 #include "Configuration_adv.h"
 #include "thermistortables.h"
