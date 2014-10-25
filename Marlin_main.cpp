@@ -488,7 +488,8 @@ void setup()
   #endif
 
   #ifdef MTWLED
-    MTWLEDUpdate(mtwled_startup);
+    MTWLEDSetup();
+    MTWLEDUpdate(mtwled_ready);
   #endif
 }
 
@@ -538,6 +539,9 @@ void loop()
   manage_inactivity();
   checkHitEndstops();
   lcd_update();
+#ifdef MTWLED
+  MTWLEDLogic();
+#endif
 }
 
 void get_command()
