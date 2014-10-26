@@ -663,6 +663,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 #define mtwled_temphigh  	10	// Hotend heater is slightly higher than target temp
 #define mtwled_heateroff	13	// Hotend heater is off but still hot
 #endif
+// M242 P<pattern> T<minimum seconds> C<0=all events enabled 1=non-temp events disabled 255=all events disabled>
 
 
 

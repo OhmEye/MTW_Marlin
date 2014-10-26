@@ -55,6 +55,9 @@
 
 #ifdef MTWLED
 #include "mtwled.h"
+extern byte MTWLED_lastpattern;
+extern long MTWLED_timer;
+extern int MTWLED_control;
 #endif
 
 #if NUM_SERVOS > 0
@@ -434,6 +437,12 @@ void setup()
 {
   setup_killpin();
   setup_powerhold();
+  
+  #ifdef MTWLED
+    MTWLEDSetup();
+//    MTWLEDUpdate(mtwled_ready);
+  #endif
+  
   MYSERIAL.begin(BAUDRATE);
   SERIAL_PROTOCOLLNPGM("start");
   SERIAL_ECHO_START;
@@ -486,16 +495,14 @@ void setup()
   #if defined(CONTROLLERFAN_PIN) && CONTROLLERFAN_PIN > -1
     SET_OUTPUT(CONTROLLERFAN_PIN); //Set pin used for driver cooling fan
   #endif
-
-  #ifdef MTWLED
-    MTWLEDSetup();
-    MTWLEDUpdate(mtwled_ready);
-  #endif
 }
 
 
 void loop()
 {
+#ifdef MTWLED
+  MTWLEDLogic();
+#endif
   if(buflen < (BUFSIZE-1))
     get_command();
   #ifdef SDSUPPORT
@@ -539,9 +546,6 @@ void loop()
   manage_inactivity();
   checkHitEndstops();
   lcd_update();
-#ifdef MTWLED
-  MTWLEDLogic();
-#endif
 }
 
 void get_command()
@@ -2352,6 +2356,40 @@ void process_commands()
     }
     break;
 
+#ifdef MTWLED
+      case 242: // M242 S<pattern code>  send a LED pattern to the MTWLED controller
+      {
+        int pattern = MTWLED_lastpattern;
+        long timer = MTWLED_timer;
+        int control = MTWLED_control;
+        byte red = 0;
+        byte green = 0;
+        byte blue = 0;
+        if (code_seen('P')) {
+          pattern = code_value();
+//          MTWLEDUpdate((int)pattern);
+//          MTWLED_lastpattern=mtwled_nochange;
+        }
+        if (code_seen('T')) {
+          timer = (long)code_value();
+        }
+        if (code_seen('C')) {
+          control = (int)code_value();
+        }
+        if (code_seen('R')) {
+          red = (int)code_value();
+        }
+        if (code_seen('G')) {
+          green = (int)code_value();
+        }
+        if (code_seen('B')) {
+          blue = (int)code_value();
+        }
+        MTWLEDUpdate(pattern,red,green,blue,timer,control);
+      break;
+      }
+#endif
+
 	case 226: // M226 P<pin number> S<pin state>- Wait until the specified pin reaches the state required
 	{
       if(code_seen('P')){
@@ -2402,14 +2440,6 @@ void process_commands()
       }
     }
     break;
-
-#ifdef MTWLED
-      case 242: //M242 sent a LED pattern to the MTWLED controller
-        if (code_seen('S')){
-           MTWLEDUpdate(byte(constrain(code_value(),0,255)));
-        }
-        break;
-#endif
 
     #if NUM_SERVOS > 0
     case 280: // M280 - set servo position absolute. P: servo index, S: angle or microseconds

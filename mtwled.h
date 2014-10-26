@@ -17,8 +17,10 @@
 
 #include "Wire.h"
 
+#define MTWLED_H
+
 void MTWLEDSetup();
-void MTWLEDUpdate(byte pattern);
+void MTWLEDUpdate(byte pattern, byte red=0, byte green=0, byte blue=0, unsigned long timer=0, int control=-1);
 void MTWLEDLogic();
 void MTWLEDTemp();
 
@@ -33,3 +35,5 @@ Fixed values for heating and cooling cycle
 Heating   will use a value of 10,20,30,40,50,60,70,80,90,100 % to change the
 colors on the led strip the % is based on the ((current temp /requested temp-starting temp)rounded to the nearest 10th
 */
+
+// M242 P<pattern> T<minimum seconds> C<0=all events enabled 1=non-temp events disabled 255=all events disabled>
