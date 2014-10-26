@@ -2403,6 +2403,14 @@ void process_commands()
     }
     break;
 
+#ifdef MTWLED
+      case 242: //M242 sent a LED pattern to the MTWLED controller
+        if (code_seen('S')){
+           MTWLEDUpdate(byte(constrain(code_value(),0,255)));
+        }
+        break;
+#endif
+
     #if NUM_SERVOS > 0
     case 280: // M280 - set servo position absolute. P: servo index, S: angle or microseconds
       {
