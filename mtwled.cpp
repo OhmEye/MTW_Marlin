@@ -64,13 +64,13 @@ void MTWLEDUpdate(patterncode pattern, unsigned long timer, int control) // send
     MTWLED_lastpattern=pattern;                           // update states
     if(timer) MTWLED_timer=millis()+(timer*1000);
         
-    SERIAL_PROTOCOL("LED P: ");                           // print feedback to serial
+    SERIAL_PROTOCOL("LED P:");                           // print feedback to serial
     SERIAL_PROTOCOL((int)pattern.part[0]);
-    SERIAL_PROTOCOL(" R: ");
+    SERIAL_PROTOCOL(" R:");
     SERIAL_PROTOCOL((int)pattern.part[1]);
-    SERIAL_PROTOCOL(" E: ");
+    SERIAL_PROTOCOL(" E:");
     SERIAL_PROTOCOL((int)pattern.part[2]);
-    SERIAL_PROTOCOL(" B: ");
+    SERIAL_PROTOCOL(" B:");
     SERIAL_PROTOCOLLN((int)pattern.part[3]);
 //    SERIAL_PROTOCOL("MTWLED ");
 //    SERIAL_PROTOCOLLN((uint32_t)pattern.value);
