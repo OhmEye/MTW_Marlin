@@ -55,7 +55,7 @@
 
 #ifdef MTWLED
 #include "mtwled.h"
-extern byte MTWLED_lastpattern;
+extern patterncode MTWLED_lastpattern;
 extern long MTWLED_timer;
 extern int MTWLED_control;
 #endif
@@ -2357,35 +2357,34 @@ void process_commands()
     break;
 
 #ifdef MTWLED
-      case 242: // M242 S<pattern code>  send a LED pattern to the MTWLED controller
+      case 242: // M242 control for the Makers Tool Works LED controller. See mtwled.h for details
       {
-        int pattern = MTWLED_lastpattern;
+        patterncode pattern;
+        pattern.part[0] = MTWLED_lastpattern.part[0];
         long timer = MTWLED_timer;
         int control = MTWLED_control;
-        byte red = 0;
-        byte green = 0;
-        byte blue = 0;
+        pattern.part[1] = 0;
+        pattern.part[2] = 0;
+        pattern.part[3] = 0;
         if (code_seen('P')) {
-          pattern = code_value();
-//          MTWLEDUpdate((int)pattern);
-//          MTWLED_lastpattern=mtwled_nochange;
+          pattern.part[0] = code_value();
         }
         if (code_seen('T')) {
           timer = (long)code_value();
         }
         if (code_seen('C')) {
-          control = (int)code_value();
+          control = code_value();
         }
         if (code_seen('R')) {
-          red = (int)code_value();
+          pattern.part[1] = code_value();
         }
-        if (code_seen('G')) {
-          green = (int)code_value();
+        if (code_seen('E')) {
+          pattern.part[2] = code_value();
         }
         if (code_seen('B')) {
-          blue = (int)code_value();
+          pattern.part[3] = code_value();
         }
-        MTWLEDUpdate(pattern,red,green,blue,timer,control);
+        MTWLEDUpdate(pattern,timer,control);
       break;
       }
 #endif
