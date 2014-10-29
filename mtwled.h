@@ -29,6 +29,7 @@ void MTWLEDUpdate(byte pattern, byte red=1, byte green=2, byte blue=3, unsigned 
 void MTWLEDUpdate(patterncode pattern, unsigned long timer=0, int control=-1);
 void MTWLEDLogic();
 void MTWLEDTemp();
+uint32_t MTWLEDConvert(byte pattern=0, byte red=0, byte green=0, byte blue=0);
 
 // Pattern Selection Table for defaults that must not be changed
 #define mtwled_nochange 	1	// Reserved for no change to LED Strip
@@ -45,10 +46,9 @@ colors on the led strip the % is based on the ((current temp /requested temp-sta
 
 /* User docs for Configuration.h stored here in case they get lost
 A pattern code is 4 bytes of data: the pattern ID plus one byte each for red, green, blue color values.
-These 4 bytes are specified as a single 32bit value like in the #defines above. A simple way to find the
-pattern code is to use the M242 command, the serial console will display the individual values and the
-pattern code when it executes a M242 command. You can experiment with patterns and RGB color values, then
-use a code returned by M242 for any default above. The M242 command has these parameters:
+A simple way to experiment to find color values you like is to use the M242 command, the serial console
+will display the individual values when it executes a M242 command. You can experiment with patterns and
+RGB color values, then use a code returned by M242 for any default above. The M242 command has these parameters:
 
 M242 P<pattern ID> R<red> E<green> B<blue> T<timer> C<control>
    pattern ID is the number of the pattern/animation to use

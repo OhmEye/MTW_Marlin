@@ -656,19 +656,18 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 
 #define MTWLED  // uncomment if using Makers Tool Works LED controller
 #ifdef MTWLED
-#define mtwled_ready		2621450	    // Marlin Ready
-#define mtwled_startup		673720330   // Marlin startup
-#define mtwled_temphit  	671098890   // Hotend is at target temp
-#define mtwled_templow		671088650   // Hotend heater is slightly lower than target temp
-#define mtwled_temphigh  	10250	    // Hotend heater is slightly higher than target temp
-#define mtwled_heateroff	2631690	    // Hotend heater is off but still hot
+#define mtwled_ready		10,0,50,0	// Marlin Ready
+#define mtwled_startup		10,50,50,50     // Marlin startup
+#define mtwled_temphit  	10,40,0,40      // Hotend is at target temp
+#define mtwled_templow		10,0,0,40       // Hotend heater is slightly lower than target temp
+#define mtwled_temphigh  	10,40,0,0	// Hotend heater is slightly higher than target temp
+#define mtwled_heateroff	10,40,40,0	// Hotend heater is off but still hot
 #endif
 /*
 A pattern code is 4 bytes of data: the pattern ID plus one byte each for red, green, blue color values.
-These 4 bytes are specified as a single 32bit value like in the #defines above. A simple way to find the
-pattern code is to use the M242 command, the serial console will display the individual values and the
-pattern code when it executes a M242 command. You can experiment with patterns and RGB color values, then
-use a code returned by M242 for any default above. The M242 command has these parameters:
+A simple way to experiment to find color values you like is to use the M242 command, the serial console
+will display the individual values when it executes a M242 command. You can experiment with patterns and
+RGB color values, then use a code returned by M242 for any default above. The M242 command has these parameters:
 
 M242 P<pattern ID> R<red> E<green> B<blue> T<timer> C<control>
    pattern ID is the number of the pattern/animation to use

@@ -26,8 +26,19 @@ void MTWLEDSetup()
   MTWLED_timer=0;
   MTWLED_control=0;
   Wire.begin();
-  MTWLEDUpdate(mtwled_startup);
+  MTWLEDUpdate(MTWLEDConvert(mtwled_startup));
 }
+
+uint32_t MTWLEDConvert(byte pattern, byte red, byte green, byte blue)
+{
+  patterncode pc;
+  pc.part[0]=pattern;
+  pc.part[1]=red;
+  pc.part[2]=green;
+  pc.part[3]=blue;
+  return pc.value;
+}
+
 
 void MTWLEDUpdate(byte pattern, byte red, byte green, byte blue, unsigned long timer, int control)
 {
@@ -76,15 +87,15 @@ void MTWLEDLogic() // called from main loop
 
   if((degTargetHotend(0) == 0)) {
     if((degHotend(0) > 38)) // heater is off but still warm
-      pattern.value=mtwled_heateroff;
+      pattern.value=MTWLEDConvert(mtwled_heateroff);
     else
-      pattern.value=mtwled_ready;
+      pattern.value=MTWLEDConvert(mtwled_ready);
     MTWLEDUpdate(pattern);
   } else {
     if(abs(degTargetHotend(0) - degHotend(0)) < 2) {
-      if(isHeatingHotend(0)) pattern.value=mtwled_templow;
-      if(isCoolingHotend(0)) pattern.value=mtwled_temphigh;
-      if(degTargetHotend(0) == degHotend(0)) pattern.value=mtwled_temphit;
+      if(isHeatingHotend(0)) pattern.value=MTWLEDConvert(mtwled_templow);
+      if(isCoolingHotend(0)) pattern.value=MTWLEDConvert(mtwled_temphigh);
+      if(degTargetHotend(0) == degHotend(0)) pattern.value=MTWLEDConvert(mtwled_temphit);
       MTWLEDUpdate(pattern);
     }
   }
