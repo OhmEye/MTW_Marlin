@@ -72,8 +72,8 @@ void MTWLEDUpdate(patterncode pattern, unsigned long timer, int control) // send
     SERIAL_PROTOCOL((int)pattern.part[2]);
     SERIAL_PROTOCOL(" B: ");
     SERIAL_PROTOCOLLN((int)pattern.part[3]);
-    SERIAL_PROTOCOL("MTWLED ");
-    SERIAL_PROTOCOLLN((uint32_t)pattern.value);
+//    SERIAL_PROTOCOL("MTWLED ");
+//    SERIAL_PROTOCOLLN((uint32_t)pattern.value);
   }
 }
 
