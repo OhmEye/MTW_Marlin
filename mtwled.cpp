@@ -19,6 +19,7 @@
 patterncode MTWLED_lastpattern;
 long MTWLED_timer;
 int MTWLED_control;
+boolean MTWLED_feedback=false;
 
 void MTWLEDSetup()
 {
@@ -55,6 +56,7 @@ void MTWLEDUpdate(patterncode pattern, unsigned long timer, int control) // send
   byte sout[]={250,pattern.part[0],pattern.part[1],pattern.part[2],pattern.part[3]}; // build frame
   
   if(control>=0) MTWLED_control=control;                  // handle exceptions/collisions/control
+  if(control==254) MTWLED_feedback=!MTWLED_feedback;
   if(pattern.part[0] < 1 || MTWLED_control==255) return;
   if(pattern.value != MTWLED_lastpattern.value)           // don't sent sequential identical patterns
   {    
@@ -63,7 +65,8 @@ void MTWLEDUpdate(patterncode pattern, unsigned long timer, int control) // send
     Wire.endTransmission();
     MTWLED_lastpattern=pattern;                           // update states
     if(timer) MTWLED_timer=millis()+(timer*1000);
-        
+  if(MTWLED_feedback)
+    {
     SERIAL_PROTOCOL("LED P:");                           // print feedback to serial
     SERIAL_PROTOCOL((int)pattern.part[0]);
     SERIAL_PROTOCOL(" R:");
@@ -74,6 +77,7 @@ void MTWLEDUpdate(patterncode pattern, unsigned long timer, int control) // send
     SERIAL_PROTOCOLLN((int)pattern.part[3]);
 //    SERIAL_PROTOCOL("MTWLED ");
 //    SERIAL_PROTOCOLLN((uint32_t)pattern.value);
+    }
   }
 }
 
