@@ -57,7 +57,7 @@ void MTWLEDUpdate(patterncode pattern, unsigned long timer, int control) // send
   
   if(control>=0) MTWLED_control=control;                  // handle exceptions/collisions/control
   if(control==254) MTWLED_feedback=!MTWLED_feedback;
-  if(pattern.part[0] < 1 || MTWLED_control==255) return;
+  if(pattern.part[0] < 1) return;
   if(pattern.value != MTWLED_lastpattern.value)           // don't sent sequential identical patterns
   {    
     Wire.beginTransmission(21);
@@ -85,7 +85,7 @@ void MTWLEDLogic() // called from main loop
 {
   patterncode pattern = MTWLED_lastpattern;
   
-  if(MTWLED_control==1) return;
+  if(MTWLED_control==1 || MTWLED_control==255) return;
   if(pattern.value==mtwled_nochange) return;
   if(MTWLED_timer > millis()) return;
 
@@ -108,7 +108,7 @@ void MTWLEDLogic() // called from main loop
 void MTWLEDTemp() // called from inside heater function while heater is on to to the percentile display
 {
 	byte pattern;
-
+        if(MTWLED_control==255) return;
 	if(abs(degTargetHotend(0) - degHotend(0)) > 2) {
 	  pattern = 90 + ((degHotend(0) / degTargetHotend(0)) * 10);
 	  if(pattern > 99) pattern = 99;
