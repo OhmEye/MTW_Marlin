@@ -17,7 +17,7 @@
 #include "temperature.h"
 
 patterncode MTWLED_lastpattern;
-long MTWLED_timer;
+unsigned long MTWLED_timer;
 int MTWLED_control;
 boolean MTWLED_feedback=false;
 
