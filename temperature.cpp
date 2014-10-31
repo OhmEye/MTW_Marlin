@@ -509,7 +509,9 @@ void manage_heater()
   } // End extruder for loop
 
 #ifdef MTWLED
+#ifndef MTWLED_disableheatup
   MTWLEDTemp();
+#endif
 #endif
 
 

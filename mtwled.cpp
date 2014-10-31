@@ -90,16 +90,18 @@ void MTWLEDLogic() // called from main loop
   if(MTWLED_timer > millis()) return;
 
   if((degTargetHotend(0) == 0)) {
-    if((degHotend(0) > 38)) // heater is off but still warm
+    if((degHotend(0) > MTWLED_cool)) // heater is off but still warm
       pattern.value=MTWLEDConvert(mtwled_heateroff);
     else
       pattern.value=MTWLEDConvert(mtwled_ready);
     MTWLEDUpdate(pattern);
   } else {
-    if(abs(degTargetHotend(0) - degHotend(0)) < 2) {
+    if(abs(degTargetHotend(0) - degHotend(0)) > MTWLED_swing) {
       if(isHeatingHotend(0)) pattern.value=MTWLEDConvert(mtwled_templow);
       if(isCoolingHotend(0)) pattern.value=MTWLEDConvert(mtwled_temphigh);
-      if(degTargetHotend(0) == degHotend(0)) pattern.value=MTWLEDConvert(mtwled_temphit);
+      MTWLEDUpdate(pattern);
+    } else {
+      pattern.value=MTWLEDConvert(mtwled_temphit);
       MTWLEDUpdate(pattern);
     }
   }
@@ -109,7 +111,7 @@ void MTWLEDTemp() // called from inside heater function while heater is on to to
 {
 	byte pattern;
         if(MTWLED_control==255) return;
-	if(abs(degTargetHotend(0) - degHotend(0)) > 2) {
+	if(abs(degTargetHotend(0) - degHotend(0)) > MTWLED_swing) {
 	  pattern = 90 + ((degHotend(0) / degTargetHotend(0)) * 10);
 	  if(pattern > 99) pattern = 99;
 	  MTWLEDUpdate(pattern);
