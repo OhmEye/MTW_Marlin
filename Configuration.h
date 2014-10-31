@@ -655,6 +655,8 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 **********************************************************************/
 #define MTWLED  // uncomment if using Makers Tool Works LED controller
 #ifdef MTWLED
+
+// patterns
 #define mtwled_ready		10,0,50,0	// Marlin Ready
 #define mtwled_startup		10,50,50,50     // Marlin startup
 #define mtwled_temphit  	10,40,0,40      // Hotend is at target temp
@@ -662,8 +664,9 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 #define mtwled_temphigh  	10,40,0,0	// Hotend heater is slightly higher than target temp
 #define mtwled_heateroff	10,40,40,0	// Hotend heater is off but still hot
 
+// option switches
 #define MTWLED_cool 35                          // The temp at which the hotend is considered cooled down and safe
-#define MTWLED_swing 2                          // how far off the before the temperature is not considered 'at temp' in degrees C
+#define MTWLED_swing 2                          // how far off before the temperature is not considered 'at temp' in degrees C
 //#define MTWLED_disableheatup                  // uncomment to disable the percentile display as hotend heats up
 #endif
 /*
