@@ -663,10 +663,14 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 #define mtwled_templow		10,0,0,40       // Hotend heater is slightly lower than target temp
 #define mtwled_temphigh  	10,40,0,0	// Hotend heater is slightly higher than target temp
 #define mtwled_heateroff	10,40,40,0	// Hotend heater is off but still hot
+#define mtwled_endstopx         17,50,50,0      // Endstop X triggered
+#define mtwled_endstopy         17,0,50,50      // Endstop Y triggered
+#define mtwled_endstopz         17,50,0,0       // Endstop Z triggered
 
 // option switches
 #define MTWLED_cool 35                          // The temp at which the hotend is considered cooled down and safe
 #define MTWLED_swing 2                          // how far off before the temperature is not considered 'at temp' in degrees C
+#define MTWLED_endstoptimer 5                   // how many seconds to display when an endstop is triggered
 //#define MTWLED_disableheatup                  // uncomment to disable the percentile display as hotend heats up
 #endif
 /*

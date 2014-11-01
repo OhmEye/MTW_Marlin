@@ -85,8 +85,52 @@ void MTWLEDLogic() // called from main loop
 {
   patterncode pattern = MTWLED_lastpattern;
   int swing;
+  boolean endstophit=false;
   
   if(MTWLED_control==1 || MTWLED_control==255) return;
+  
+  #if defined(X_MIN_PIN) && X_MIN_PIN > -1
+  if(READ(X_MIN_PIN)^X_MIN_ENDSTOP_INVERTING) {
+    pattern.value=MTWLEDConvert(mtwled_endstopx);
+    endstophit=true;
+  }
+  #endif
+  #if defined(X_MAX_PIN) && X_MAX_PIN > -1
+  if(READ(X_MAX_PIN)^X_MAX_ENDSTOP_INVERTING) {
+    pattern.value=MTWLEDConvert(mtwled_endstopx);
+    endstophit=true;
+  }
+  #endif
+  #if defined(Y_MIN_PIN) && Y_MIN_PIN > -1
+  if(READ(Y_MIN_PIN)^Y_MIN_ENDSTOP_INVERTING) {
+    pattern.value=MTWLEDConvert(mtwled_endstopy);
+    endstophit=true;
+  }
+  #endif
+  #if defined(Y_MAX_PIN) && Y_MAX_PIN > -1
+  if(READ(Y_MAX_PIN)^Y_MAX_ENDSTOP_INVERTING) {
+    pattern.value=MTWLEDConvert(mtwled_endstopy);
+    endstophit=true;
+  }
+  #endif
+  #if defined(Z_MIN_PIN) && Z_MIN_PIN > -1
+  if(READ(Z_MIN_PIN)^Z_MIN_ENDSTOP_INVERTING) {
+    pattern.value=MTWLEDConvert(mtwled_endstopz);
+    
+  }
+  #endif
+  #if defined(Z_MAX_PIN) && Z_MAX_PIN > -1
+  if(READ(Z_MAX_PIN)^Z_MAX_ENDSTOP_INVERTING) {
+    pattern.value=MTWLEDConvert(mtwled_endstopz);
+    endstophit=true;
+  }
+  #endif
+  if(endstophit)
+    {
+      MTWLEDUpdate(pattern,MTWLED_endstoptimer);
+      return;
+    }  
+  
   if(pattern.value==mtwled_nochange) return;
   if(MTWLED_timer > millis()) return;
 
@@ -97,11 +141,11 @@ void MTWLEDLogic() // called from main loop
       pattern.value=MTWLEDConvert(mtwled_ready);
     MTWLEDUpdate(pattern);
   } else {
-    swing=abs(degTargetHotend(0) - degHotend(0));
-    if(swing < MTWLED_swing*2) {
-      if(isHeatingHotend(0)) pattern.value=MTWLEDConvert(mtwled_templow);
-      if(isCoolingHotend(0)) pattern.value=MTWLEDConvert(mtwled_temphigh);
-      if(swing < MTWLED_swing) pattern.value=MTWLEDConvert(mtwled_temphit);
+    swing=abs(degTargetHotend(0) - degHotend(0)); // how far off from target temp we are
+    if(swing < MTWLED_swing*2) {                  // if within double the swing threshold
+      if(isHeatingHotend(0)) pattern.value=MTWLEDConvert(mtwled_templow);    // heater is on so temp must be low
+      if(isCoolingHotend(0)) pattern.value=MTWLEDConvert(mtwled_temphigh);   // heater is off so temp must be high
+      if(swing < MTWLED_swing) pattern.value=MTWLEDConvert(mtwled_temphit);  // close to target temp, so consider us 'at temp'
       MTWLEDUpdate(pattern);
     } 
   }
