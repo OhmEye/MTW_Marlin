@@ -82,3 +82,4 @@ M242 P<pattern ID> R<red> E<green> B<blue> T<timer> C<control>
       15 RGB 	Color Chase Single Led
       16 RGB 	Slow fill then solid
       17 RGB	Repeating Blink
+*/
