@@ -29,6 +29,7 @@ void MTWLEDUpdate(byte pattern, byte red=1, byte green=2, byte blue=3, unsigned 
 void MTWLEDUpdate(patterncode pattern, unsigned long timer=0, int control=-1);
 void MTWLEDLogic();
 void MTWLEDTemp();
+boolean MTWLEDEndstop(boolean force);
 uint32_t MTWLEDConvert(byte pattern=0, byte red=0, byte green=0, byte blue=0);
 
 // Pattern Selection Table for defaults that must not be changed
@@ -52,7 +53,6 @@ RGB color values, then use a code returned by M242 for any default above. The M2
 
 M242 P<pattern ID> R<red> E<green> B<blue> T<timer> C<control>
    pattern ID is the number of the pattern/animation to use
-      A pattern must be specified if using colors or a timer
    R is a value from 0-127 for how red the color will be
    E is a value from 0-127 for how green the color will be
    B is a value from 0-127 for how blue the color will be
@@ -63,6 +63,8 @@ M242 P<pattern ID> R<red> E<green> B<blue> T<timer> C<control>
    C is a control what patterns marlin sends automatically.
       C0 will enable all marlin LED events
       C1 will disable general status events (ready, holding temp, etc.)
+      C2 will display endstop status
+      C254 toggles serial debug output
       C255 will disable all marlin LED events
       The control parameter can be used by itself without specifying a pattern ID.
    Examples:
@@ -80,4 +82,3 @@ M242 P<pattern ID> R<red> E<green> B<blue> T<timer> C<control>
       15 RGB 	Color Chase Single Led
       16 RGB 	Slow fill then solid
       17 RGB	Repeating Blink
-*/

@@ -18,14 +18,14 @@
 
 patterncode MTWLED_lastpattern;
 unsigned long MTWLED_timer;
-int MTWLED_control;
+int MTWLED_control; // representing startup
 boolean MTWLED_feedback=false;
 
 void MTWLEDSetup()
 {
   MTWLED_lastpattern.value=0;
   MTWLED_timer=0;
-  MTWLED_control=0;
+  MTWLED_control=-1;
   Wire.begin();
   MTWLEDUpdate(MTWLEDConvert(mtwled_startup));
 }
@@ -55,9 +55,10 @@ void MTWLEDUpdate(patterncode pattern, unsigned long timer, int control) // send
 {
   byte sout[]={250,pattern.part[0],pattern.part[1],pattern.part[2],pattern.part[3]}; // build frame
   
-  if(control>=0) MTWLED_control=control;                  // handle exceptions/collisions/control
-  if(control==254) MTWLED_feedback=!MTWLED_feedback;
   if(pattern.part[0] < 1) return;
+  if(control>=0) MTWLED_control=control;                  // handle exceptions/collisions/control
+  if(control==2) { MTWLEDEndstop(true); return; }         // force endstop status display on C2
+  if(control==254) MTWLED_feedback=!MTWLED_feedback;
   if(pattern.value != MTWLED_lastpattern.value)           // don't sent sequential identical patterns
   {    
     Wire.beginTransmission(21);
@@ -81,58 +82,52 @@ void MTWLEDUpdate(patterncode pattern, unsigned long timer, int control) // send
   }
 }
 
+boolean MTWLEDEndstop(boolean force)
+{
+  boolean endx=0, endy=0, endz=0;
+
+  #if defined(X_MIN_PIN) && X_MIN_PIN > -1
+  if(force || current_position[X_AXIS]!=0) endx += (READ(X_MIN_PIN)^X_MIN_ENDSTOP_INVERTING);
+  #endif
+  #if defined(X_MAX_PIN) && X_MAX_PIN > -1
+  if(force || current_position[X_AXIS]!=X_MAX_POS) endx += (READ(X_MAX_PIN)^X_MAX_ENDSTOP_INVERTING);
+  #endif
+  #if defined(Y_MIN_PIN) && Y_MIN_PIN > -1
+  if(force || current_position[Y_AXIS]!=0) endy += (READ(Y_MIN_PIN)^Y_MIN_ENDSTOP_INVERTING);
+  #endif
+  #if defined(Y_MAX_PIN) && Y_MAX_PIN > -1
+  if(force || current_position[Y_AXIS]!=Y_MAX_POS) endy += (READ(Y_MAX_PIN)^Y_MAX_ENDSTOP_INVERTING);
+  #endif
+  #if defined(Z_MIN_PIN) && Z_MIN_PIN > -1
+  if(force || current_position[Z_AXIS]!=0) endz += (READ(Z_MIN_PIN)^Z_MIN_ENDSTOP_INVERTING);
+  #endif
+  #if defined(Z_MAX_PIN) && Z_MAX_PIN > -1
+  if(force || current_position[Z_AXIS]!=Z_MAX_POS) endz += (READ(Z_MAX_PIN)^Z_MAX_ENDSTOP_INVERTING);
+  #endif
+  if(force || endx || endy || endz) {
+      MTWLEDUpdate(2,endx,endy,endz,MTWLED_endstoptimer);
+      if(endx || endy || endz) return true;
+  }
+  return false;
+}
+
 void MTWLEDLogic() // called from main loop
 {
   patterncode pattern = MTWLED_lastpattern;
   int swing;
-  boolean endstophit=false;
   
   if(MTWLED_control==1 || MTWLED_control==255) return;
-  
-  #if defined(X_MIN_PIN) && X_MIN_PIN > -1
-  if(READ(X_MIN_PIN)^X_MIN_ENDSTOP_INVERTING) {
-    pattern.value=MTWLEDConvert(mtwled_endstopx);
-    endstophit=true;
-  }
-  #endif
-  #if defined(X_MAX_PIN) && X_MAX_PIN > -1
-  if(READ(X_MAX_PIN)^X_MAX_ENDSTOP_INVERTING) {
-    pattern.value=MTWLEDConvert(mtwled_endstopx);
-    endstophit=true;
-  }
-  #endif
-  #if defined(Y_MIN_PIN) && Y_MIN_PIN > -1
-  if(READ(Y_MIN_PIN)^Y_MIN_ENDSTOP_INVERTING) {
-    pattern.value=MTWLEDConvert(mtwled_endstopy);
-    endstophit=true;
-  }
-  #endif
-  #if defined(Y_MAX_PIN) && Y_MAX_PIN > -1
-  if(READ(Y_MAX_PIN)^Y_MAX_ENDSTOP_INVERTING) {
-    pattern.value=MTWLEDConvert(mtwled_endstopy);
-    endstophit=true;
-  }
-  #endif
-  #if defined(Z_MIN_PIN) && Z_MIN_PIN > -1
-  if(READ(Z_MIN_PIN)^Z_MIN_ENDSTOP_INVERTING) {
-    pattern.value=MTWLEDConvert(mtwled_endstopz);
-    
-  }
-  #endif
-  #if defined(Z_MAX_PIN) && Z_MAX_PIN > -1
-  if(READ(Z_MAX_PIN)^Z_MAX_ENDSTOP_INVERTING) {
-    pattern.value=MTWLEDConvert(mtwled_endstopz);
-    endstophit=true;
-  }
-  #endif
-  if(endstophit)
-    {
-      MTWLEDUpdate(pattern,MTWLED_endstoptimer);
-      return;
-    }  
+
+  if(MTWLEDEndstop(false)) return;
   
   if(pattern.value==mtwled_nochange) return;
   if(MTWLED_timer > millis()) return;
+
+  if(MTWLED_control==-1) { // if this is first time display endstop status before clearing to ready
+     MTWLEDEndstop(true);
+     MTWLED_control=0;
+     return;
+  }
 
   if((degTargetHotend(0) == 0)) {
     if((degHotend(0) > MTWLED_cool)) // heater is off but still warm

@@ -663,14 +663,11 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 #define mtwled_templow		10,0,0,40       // Hotend heater is slightly lower than target temp
 #define mtwled_temphigh  	10,40,0,0	// Hotend heater is slightly higher than target temp
 #define mtwled_heateroff	10,40,40,0	// Hotend heater is off but still hot
-#define mtwled_endstopx         17,50,50,0      // Endstop X triggered
-#define mtwled_endstopy         17,0,50,50      // Endstop Y triggered
-#define mtwled_endstopz         17,50,0,0       // Endstop Z triggered
 
 // option switches
 #define MTWLED_cool 35                          // The temp at which the hotend is considered cooled down and safe
 #define MTWLED_swing 2                          // how far off before the temperature is not considered 'at temp' in degrees C
-#define MTWLED_endstoptimer 5                   // how many seconds to display when an endstop is triggered
+#define MTWLED_endstoptimer 5                   // how many seconds to display endstop status
 //#define MTWLED_disableheatup                  // uncomment to disable the percentile display as hotend heats up
 #endif
 /*
@@ -681,7 +678,6 @@ RGB color values, then use a code returned by M242 for any default above. The M2
 
 M242 P<pattern ID> R<red> E<green> B<blue> T<timer> C<control>
    pattern ID is the number of the pattern/animation to use
-      A pattern must be specified if using colors or a timer
    R is a value from 0-127 for how red the color will be
    E is a value from 0-127 for how green the color will be
    B is a value from 0-127 for how blue the color will be
@@ -692,6 +688,8 @@ M242 P<pattern ID> R<red> E<green> B<blue> T<timer> C<control>
    C is a control what patterns marlin sends automatically.
       C0 will enable all marlin LED events
       C1 will disable general status events (ready, holding temp, etc.)
+      C2 will display endstop status
+      C254 toggles serial debug output
       C255 will disable all marlin LED events
       The control parameter can be used by itself without specifying a pattern ID.
    Examples:
