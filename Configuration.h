@@ -685,13 +685,13 @@ M242 P<pattern ID> R<red> E<green> B<blue> T<timer> C<control>
       depending on the pattern selected.
    T is a timer in seconds for how long the pattern will override the default patterns from marlin
       If marlin events are enabled, the LEDs will resume automatic changed when the time has elapsed
-   C is a control what patterns marlin sends automatically.
+   C is a command that affects LED options, such as what events marlin sends automatically or display endstop status
       C0 will enable all marlin LED events
       C1 will disable general status events (ready, holding temp, etc.)
       C2 will display endstop status
       C254 toggles serial debug output
       C255 will disable all marlin LED events
-      The control parameter can be used by itself without specifying a pattern ID.
+      The C command parameter is usually used by itself without specifying a pattern ID.
    Examples:
       M242 C1          Disable marlin's status events (handy to prevent it overriding while testing)
       M242 P10 B40     Sets pattern 10 (solid color) blue

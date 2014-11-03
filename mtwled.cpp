@@ -18,14 +18,14 @@
 
 patterncode MTWLED_lastpattern;
 unsigned long MTWLED_timer;
-int MTWLED_control; // representing startup
+int MTWLED_control;
 boolean MTWLED_feedback=false;
 
 void MTWLEDSetup()
 {
   MTWLED_lastpattern.value=0;
   MTWLED_timer=0;
-  MTWLED_control=-1;
+  MTWLED_control=-1; // representing startup
   Wire.begin();
   MTWLEDUpdate(MTWLEDConvert(mtwled_startup));
 }
