@@ -676,7 +676,7 @@ A simple way to experiment to find color values you like is to use the M242 comm
 will display the individual values when it executes a M242 command. You can experiment with patterns and
 RGB color values, then use a code returned by M242 for any default above. The M242 command has these parameters:
 
-M242 P<pattern ID> R<red> E<green> B<blue> T<timer> C<control>
+M242 P<pattern ID> R<red> E<green> B<blue> T<timer> C<command>
    pattern ID is the number of the pattern/animation to use
    R is a value from 0-127 for how red the color will be
    E is a value from 0-127 for how green the color will be
