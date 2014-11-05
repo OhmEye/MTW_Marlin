@@ -657,8 +657,9 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 #ifdef MTWLED
 
 // patterns
-#define mtwled_ready		10,0,50,0	// Marlin Ready
-#define mtwled_startup		10,50,50,50     // Marlin startup
+//                       pattern ID,red,green,blue
+#define mtwled_ready		10,25,50,0	// Marlin Ready
+#define mtwled_startup		10,64,64,64     // Marlin startup
 #define mtwled_temphit  	10,40,0,40      // Hotend is at target temp
 #define mtwled_templow		10,0,0,40       // Hotend heater is slightly lower than target temp
 #define mtwled_temphigh  	10,40,0,0	// Hotend heater is slightly higher than target temp
