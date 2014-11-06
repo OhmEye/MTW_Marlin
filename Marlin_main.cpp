@@ -55,8 +55,6 @@
 
 #ifdef MTWLED
 #include "mtwled.h"
-extern patterncode MTWLED_lastpattern;
-extern long MTWLED_timer;
 extern int MTWLED_control;
 #endif
 
@@ -2384,8 +2382,8 @@ void process_commands()
           pattern.part[3] = code_value();
         }
         MTWLEDUpdate(pattern,timer,control);
-      break;
       }
+      break;
 #endif
 
 	case 226: // M226 P<pin number> S<pin state>- Wait until the specified pin reaches the state required
