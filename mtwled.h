@@ -25,7 +25,7 @@ union patterncode {  // access a pattern both as 32 bits and as array of 4 bytes
 };
 
 void MTWLEDSetup();
-void MTWLEDUpdate(byte pattern, byte red=1, byte green=2, byte blue=3, unsigned long timer=0, int control=-1);
+void MTWLEDUpdate(byte pattern, byte red=0, byte green=0, byte blue=0, unsigned long timer=0, int control=-1);
 void MTWLEDUpdate(patterncode pattern, unsigned long timer=0, int control=-1);
 void MTWLEDLogic();
 void MTWLEDTemp();
@@ -38,7 +38,7 @@ uint32_t MTWLEDConvert(byte pattern=0, byte red=0, byte green=0, byte blue=0);
 // see Configuration.h for the user customizable event pattern codes
 
 /*
-90-99 Reserved for heating and cooling values
+9 and 90-99 Reserved for heating and cooling values
 Fixed values for heating and cooling cycle
 Heating   will use a value of 10,20,30,40,50,60,70,80,90,100 % to change the
 colors on the led strip the % is based on the ((current temp /requested temp-starting temp)rounded to the nearest 10th

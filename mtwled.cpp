@@ -27,7 +27,9 @@ void MTWLEDSetup()
   MTWLED_timer=0;
   MTWLED_control=-1; // representing startup
   Wire.begin();
-  MTWLEDUpdate(MTWLEDConvert(mtwled_startup));
+  patterncode pc;
+  pc.value=MTWLEDConvert(mtwled_startup);
+  MTWLEDUpdate(pc,2);
 }
 
 uint32_t MTWLEDConvert(byte pattern, byte red, byte green, byte blue)
@@ -55,10 +57,10 @@ void MTWLEDUpdate(patterncode pattern, unsigned long timer, int control) // send
 {
   byte sout[]={250,pattern.part[0],pattern.part[1],pattern.part[2],pattern.part[3]}; // build frame
   
-  if(pattern.part[0] < 1) return;
-  if(control>=0) MTWLED_control=control;                  // handle exceptions/collisions/control
   if(control==2) { MTWLEDEndstop(true); return; }         // force endstop status display on C2
-  if(control==254) MTWLED_feedback=!MTWLED_feedback;
+  if(control==254) { MTWLED_feedback=!MTWLED_feedback; return; }
+  if(control>=0) MTWLED_control=control;                  // handle exceptions/collisions/control
+  if(pattern.part[0] < 1) return;
   if(pattern.value != MTWLED_lastpattern.value)           // don't sent sequential identical patterns
   {    
     Wire.beginTransmission(21);
@@ -75,7 +77,9 @@ void MTWLEDUpdate(patterncode pattern, unsigned long timer, int control) // send
     SERIAL_PROTOCOL(" E:");
     SERIAL_PROTOCOL((int)pattern.part[2]);
     SERIAL_PROTOCOL(" B:");
-    SERIAL_PROTOCOLLN((int)pattern.part[3]);
+    SERIAL_PROTOCOL((int)pattern.part[3]);
+    SERIAL_PROTOCOL(" C:");
+    SERIAL_PROTOCOLLN((int)MTWLED_control);
 //    SERIAL_PROTOCOL("MTWLED ");
 //    SERIAL_PROTOCOLLN((uint32_t)pattern.value);
     }
@@ -114,7 +118,6 @@ boolean MTWLEDEndstop(boolean force)
 void MTWLEDLogic() // called from main loop
 {
   patterncode pattern = MTWLED_lastpattern;
-  int swing;
   
   if(MTWLED_control==1 || MTWLED_control==255) return;
 
@@ -136,7 +139,7 @@ void MTWLEDLogic() // called from main loop
       pattern.value=MTWLEDConvert(mtwled_ready);
     MTWLEDUpdate(pattern);
   } else {
-    swing=abs(degTargetHotend(0) - degHotend(0)); // how far off from target temp we are
+    int swing=abs(degTargetHotend(0) - degHotend(0)); // how far off from target temp we are
     if(swing < MTWLED_swing*2) {                  // if within double the swing threshold
       if(isHeatingHotend(0)) pattern.value=MTWLEDConvert(mtwled_templow);    // heater is on so temp must be low
       if(isCoolingHotend(0)) pattern.value=MTWLEDConvert(mtwled_temphigh);   // heater is off so temp must be high
@@ -146,14 +149,15 @@ void MTWLEDLogic() // called from main loop
   }
 }
 
-void MTWLEDTemp() // called from inside heater function while heater is on to to the percentile display
+void MTWLEDTemp() // called from inside heater function while heater is on to do the percentile display
 {
-	byte pattern;
+	byte percent;
         if(MTWLED_control==255) return;
+        if((degTargetHotend(0) == 0)) return;
 	if(abs(degTargetHotend(0) - degHotend(0)) > MTWLED_swing*2) {
-	  pattern = 90 + ((degHotend(0) / degTargetHotend(0)) * 10);
-	  if(pattern > 99) pattern = 99;
-	  MTWLEDUpdate(pattern);
+	  percent = ((degHotend(0) / (degTargetHotend(0)+MTWLED_cool)) * 100);
+	  if(percent > 100) percent = 100;
+	  MTWLEDUpdate(9,percent,MTWLED_heatmode,0);
 	}
 }
 

@@ -440,7 +440,6 @@ void setup()
   
   #ifdef MTWLED
     MTWLEDSetup();
-//    MTWLEDUpdate(mtwled_ready);
   #endif
   
   MYSERIAL.begin(BAUDRATE);
@@ -2360,8 +2359,8 @@ void process_commands()
       case 242: // M242 control for the Makers Tool Works LED controller. See mtwled.h for details
       {
         patterncode pattern;
-        pattern.part[0] = MTWLED_lastpattern.part[0];
-        long timer = MTWLED_timer;
+        pattern.part[0] = 0;
+        long timer = 0;
         int control = MTWLED_control;
         pattern.part[1] = 0;
         pattern.part[2] = 0;
