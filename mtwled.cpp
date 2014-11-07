@@ -20,6 +20,7 @@ patterncode MTWLED_lastpattern;
 unsigned long MTWLED_timer;
 int MTWLED_control;
 boolean MTWLED_feedback=false;
+boolean MTWLED_heated=false;
 
 void MTWLEDSetup()
 {
@@ -132,12 +133,14 @@ void MTWLEDLogic() // called from main loop
   if((degTargetHotend(0) == 0)) {
     if((degHotend(0) > MTWLED_cool)) // heater is off but still warm
       pattern.value=MTWLEDConvert(mtwled_heateroff);
-    else
+    else {
       pattern.value=MTWLEDConvert(mtwled_ready);
+      MTWLED_heated=false;
+    }
     MTWLEDUpdate(pattern);
   } else {
     int swing=abs(degTargetHotend(0) - degHotend(0)); // how far off from target temp we are
-    if(swing < MTWLED_swing*2) {                  // if within double the swing threshold
+    if(MTWLED_heated && (swing < MTWLED_swing*2)) {                  // if not heating up and within double the swing threshold
       if(isHeatingHotend(0)) pattern.value=MTWLEDConvert(mtwled_templow);    // heater is on so temp must be low
       if(isCoolingHotend(0)) pattern.value=MTWLEDConvert(mtwled_temphigh);   // heater is off so temp must be high
       if(swing < MTWLED_swing) pattern.value=MTWLEDConvert(mtwled_temphit);  // close to target temp, so consider us 'at temp'
@@ -149,11 +152,13 @@ void MTWLEDLogic() // called from main loop
 void MTWLEDTemp() // called from inside heater function while heater is on to do the percentile display
 {
 	byte percent;
+        if(MTWLED_heated) return;
         if(MTWLED_control==255) return;
         if((degTargetHotend(0) == 0)) return;
 	if(abs(degTargetHotend(0) - degHotend(0)) > MTWLED_swing*2) {
-	  percent = ((degHotend(0) / (degTargetHotend(0)+MTWLED_cool)) * 100);
+	  percent = ((degHotend(0) / (degTargetHotend(0))) * 100);
 	  if(percent > 100) percent = 100;
+          if(degHotend(0) >= degTargetHotend(0)) MTWLED_heated=true;
 	  MTWLEDUpdate(9,percent,MTWLED_heatmode,0);
 	}
 }
