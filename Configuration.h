@@ -668,7 +668,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // option switches
 #define MTWLED_cool 35                          // The temp at which the hotend is considered cooled down and safe
 #define MTWLED_swing 2                          // how far off before the temperature is not considered 'at temp' in degrees C
-#define MTWLED_heatmode 2                       // animation type for heat=up pattern: 0=solid color 1=chasing 2=progress bar 3=scanner
+#define MTWLED_heatmode 2                       // animation type for heat=up pattern: 0=solid color 1=chasing 2=wipe 3=scanner
 #define MTWLED_endstoptimer 5                   // how many seconds to display endstop status
 //#define MTWLED_disableheatup                  // uncomment to disable the percentile display as hotend heats up
 #endif
