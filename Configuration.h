@@ -160,11 +160,11 @@
 // Comment the following line to disable PID and enable bang-bang.
 #define PIDTEMP
 #define BANG_MAX 192 // limits current to nozzle while in bang-bang mode; 255=full current
-#define PID_MAX 192 // limits current to nozzle while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
+#define PID_MAX 224 // limits current to nozzle while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
 #ifdef PIDTEMP
   //#define PID_DEBUG // Sends debug data to the serial port.
   //#define PID_OPENLOOP 1 // Puts PID in open loop. M104/M140 sets the output power from 0 to PID_MAX
-  #define PID_FUNCTIONAL_RANGE 25 // If the temperature difference between the target temperature and the actual temperature
+  #define PID_FUNCTIONAL_RANGE 32 // If the temperature difference between the target temperature and the actual temperature
                                   // is more then PID_FUNCTIONAL_RANGE then the PID will be shut off and the heater will be set to min/max.
   #define PID_INTEGRAL_DRIVE_MAX 255  //limit for the integral term
   #define K1 0.95 //smoothing factor within the PID
@@ -177,9 +177,9 @@
 //    #define  DEFAULT_Kd 114
 
 // OhmEye MM3 E3D V6 E0
-      #define  DEFAULT_Kp 20.57
-      #define  DEFAULT_Ki 1.7
-      #define  DEFAULT_Kd 62.35
+      #define  DEFAULT_Kp 18.82
+      #define  DEFAULT_Ki 1.47
+      #define  DEFAULT_Kd 60.12
 
 // Makergear
 //    #define  DEFAULT_Kp 7.0
@@ -669,6 +669,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 #define MTWLED_cool 35                          // The temp at which the hotend is considered cooled down and safe
 #define MTWLED_swing 2                          // how far off before the temperature is not considered 'at temp' in degrees C
 #define MTWLED_heatmode 2                       // animation type for heat=up pattern: 0=solid color 1=chasing 2=wipe 3=scanner
+#define MTWLED_printmode 1                      // animation type during printing: 0=templow/temphit/temphigh 1=XYZ position
 #define MTWLED_endstoptimer 5                   // how many seconds to display endstop status
 //#define MTWLED_disableheatup                  // uncomment to disable the percentile display as hotend heats up
 #endif
@@ -700,7 +701,7 @@ M242 P<pattern ID> R<red> E<green> B<blue> T<timer> C<command>
       M242 P10 B50 R50 Sets pattern 10 (solid color) purple
       M242 P11 R50 T10 Sets a scanning pattern (cylon/KITT) red for at least 10 seconds
       M242 P13 E40 T10 Sets a chasing pattern green for at least 10 seconds
-   Current patterns are:
+   Current pattern IDs are:
       10 RGB	Solid color
       11 RGB 	Cylon
       12 RGB 	UFO PULSE

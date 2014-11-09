@@ -21,6 +21,7 @@ unsigned long MTWLED_timer;
 int MTWLED_control;
 boolean MTWLED_feedback=false;
 boolean MTWLED_heated=false;
+int MTWLED_mode=MTWLED_printmode; // select what type of events to send while printing... 0=temperature 1=coordinates
 
 void MTWLEDSetup()
 {
@@ -130,7 +131,7 @@ void MTWLEDLogic() // called from main loop
      return;
   }
 
-  if((degTargetHotend(0) == 0)) {
+  if((degTargetHotend(0) == 0)) { // assume not printing since target temp is zero
     if((degHotend(0) > MTWLED_cool)) // heater is off but still warm
       pattern.value=MTWLEDConvert(mtwled_heateroff);
     else {
@@ -139,16 +140,22 @@ void MTWLEDLogic() // called from main loop
     }
     MTWLEDUpdate(pattern);
   } else {
-    int swing=abs(degTargetHotend(0) - degHotend(0)); // how far off from target temp we are
-    if(MTWLED_heated && (swing < MTWLED_swing*2)) {                  // if not heating up and within double the swing threshold
-      if(isHeatingHotend(0)) pattern.value=MTWLEDConvert(mtwled_templow);    // heater is on so temp must be low
-      if(isCoolingHotend(0)) pattern.value=MTWLEDConvert(mtwled_temphigh);   // heater is off so temp must be high
-      if(swing < MTWLED_swing) pattern.value=MTWLEDConvert(mtwled_temphit);  // close to target temp, so consider us 'at temp'
-      MTWLEDUpdate(pattern);
-    } 
+    if(MTWLED_mode) { // not default mode. coordinates mode is the only option for now
+      byte r=(current_position[X_AXIS]/X_MAX_POS)*50+5;
+      byte g=(current_position[Y_AXIS]/Y_MAX_POS)*50+5;
+      byte b=(current_position[Z_AXIS]/Z_MAX_POS)*100+5;
+      MTWLEDUpdate(10,r,g,b,1);
+    } else { // default mode is temporature mode
+      int swing=abs(degTargetHotend(0) - degHotend(0)); // how far off from target temp we are
+      if(MTWLED_heated && (swing < MTWLED_swing*2)) {                  // if not heating up and within double the swing threshold
+        if(isHeatingHotend(0)) pattern.value=MTWLEDConvert(mtwled_templow);    // heater is on so temp must be low
+        if(isCoolingHotend(0)) pattern.value=MTWLEDConvert(mtwled_temphigh);   // heater is off so temp must be high
+        if(swing < MTWLED_swing) pattern.value=MTWLEDConvert(mtwled_temphit);  // close to target temp, so consider us 'at temp'
+        MTWLEDUpdate(pattern);
+      } 
+    }
   }
 }
-
 void MTWLEDTemp() // called from inside heater function while heater is on to do the percentile display
 {
 	byte percent;
