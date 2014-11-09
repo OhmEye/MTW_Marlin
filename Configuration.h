@@ -692,6 +692,7 @@ M242 P<pattern ID> R<red> E<green> B<blue> T<timer> C<command>
       C0 will enable all marlin LED events
       C1 will disable general status events (ready, holding temp, etc.)
       C2 will display endstop status
+      C252 toggles between printmodes
       C254 toggles serial debug output
       C255 will disable all marlin LED events
       The C command parameter is usually used by itself without specifying a pattern ID.

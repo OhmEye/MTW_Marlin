@@ -61,6 +61,7 @@ void MTWLEDUpdate(patterncode pattern, unsigned long timer, int control) // send
   
   if(control==2) { MTWLEDEndstop(true); return; }         // force endstop status display on C2
   if(control==254) { MTWLED_feedback=!MTWLED_feedback; return; }
+  if(control==252) { MTWLED_mode=!MTWLED_mode; return; }
   if(control>=0) MTWLED_control=control;                  // handle exceptions/collisions/control
   if(pattern.part[0] < 1) return;
   if(pattern.value != MTWLED_lastpattern.value)           // don't sent sequential identical patterns
@@ -142,8 +143,8 @@ void MTWLEDLogic() // called from main loop
   } else {
     if(MTWLED_mode) { // not default mode. coordinates mode is the only option for now
       byte r=(current_position[X_AXIS]/X_MAX_POS)*50+5;
-      byte g=(current_position[Y_AXIS]/Y_MAX_POS)*50+5;
-      byte b=(current_position[Z_AXIS]/Z_MAX_POS)*100+5;
+      byte b=(current_position[Y_AXIS]/Y_MAX_POS)*50+5;
+      byte g=(current_position[Z_AXIS]/Z_MAX_POS)*100+5;
       MTWLEDUpdate(10,r,g,b,1);
     } else { // default mode is temporature mode
       int swing=abs(degTargetHotend(0) - degHotend(0)); // how far off from target temp we are
