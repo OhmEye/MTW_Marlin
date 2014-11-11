@@ -61,7 +61,7 @@ void MTWLEDUpdate(patterncode pattern, unsigned long timer, int control) // send
   
   if(control==2) { MTWLEDEndstop(true); return; }         // force endstop status display on C2
   if(control==254) { MTWLED_feedback=!MTWLED_feedback; return; }
-  if(control==252) { MTWLED_mode=!MTWLED_mode; return; }
+  if(control==252) { MTWLED_mode ? MTWLED_mode=0 : MTWLED_mode=1; return; }
   if(control>=0) MTWLED_control=control;                  // handle exceptions/collisions/control
   if(pattern.part[0] < 1) return;
   if(pattern.value != MTWLED_lastpattern.value)           // don't sent sequential identical patterns
@@ -141,22 +141,26 @@ void MTWLEDLogic() // called from main loop
     }
     MTWLEDUpdate(pattern);
   } else {
-    if(MTWLED_mode) { // not default mode. coordinates mode is the only option for now
-      byte r=(current_position[X_AXIS]/X_MAX_POS)*50+5;
-      byte b=(current_position[Y_AXIS]/Y_MAX_POS)*50+5;
-      byte g=(current_position[Z_AXIS]/Z_MAX_POS)*100+5;
-      MTWLEDUpdate(10,r,g,b,1);
-    } else { // default mode is temporature mode
-      int swing=abs(degTargetHotend(0) - degHotend(0)); // how far off from target temp we are
-      if(MTWLED_heated && (swing < MTWLED_swing*2)) {                  // if not heating up and within double the swing threshold
-        if(isHeatingHotend(0)) pattern.value=MTWLEDConvert(mtwled_templow);    // heater is on so temp must be low
-        if(isCoolingHotend(0)) pattern.value=MTWLEDConvert(mtwled_temphigh);   // heater is off so temp must be high
-        if(swing < MTWLED_swing) pattern.value=MTWLEDConvert(mtwled_temphit);  // close to target temp, so consider us 'at temp'
-        MTWLEDUpdate(pattern);
-      } 
+    if(MTWLED_heated)
+      switch(MTWLED_mode) {
+//        case 2: // display XYZ position colors separately needs pattern 8 implemented in controller
+//          MTWLEDUpdate(8,(current_position[X_AXIS]/X_MAX_POS)*50+5,(current_position[Z_AXIS]/Z_MAX_POS)*100+5,(current_position[Y_AXIS]/Y_MAX_POS)*50+5,1);
+//          break;
+        case 1: // XYZ position used as RBG
+          MTWLEDUpdate(10,(current_position[X_AXIS]/X_MAX_POS)*50+5,(current_position[Z_AXIS]/Z_MAX_POS)*100+5,(current_position[Y_AXIS]/Y_MAX_POS)*50+5,1);
+          break;
+        default: // show solid color based on XYZ=RGB color values
+          int swing=abs(degTargetHotend(0) - degHotend(0)); // how far off from target temp we are
+          if(MTWLED_heated && (swing < MTWLED_swing*2)) {                  // if not heating up and within double the swing threshold
+            if(isHeatingHotend(0)) pattern.value=MTWLEDConvert(mtwled_templow);    // heater is on so temp must be low
+            if(isCoolingHotend(0)) pattern.value=MTWLEDConvert(mtwled_temphigh);   // heater is off so temp must be high
+            if(swing < MTWLED_swing) pattern.value=MTWLEDConvert(mtwled_temphit);  // close to target temp, so consider us 'at temp'
+            MTWLEDUpdate(pattern);
+          }
+      }
     }
-  }
 }
+
 void MTWLEDTemp() // called from inside heater function while heater is on to do the percentile display
 {
 	byte percent;
