@@ -57,7 +57,7 @@ void MTWLEDUpdate(byte pattern, byte red, byte green, byte blue, unsigned long t
 
 void MTWLEDUpdate(patterncode pattern, unsigned long timer, int control) // send pattern frame via I2C
 {
-  byte sout[]={250,pattern.part[0],pattern.part[1],pattern.part[2],pattern.part[3]}; // build frame
+  byte sout[]={250,pattern.part[0],constrain(pattern.part[1],0,127),constrain(pattern.part[2],0,127),constrain(pattern.part[3],0,127)}; // build frame
   
   if(control==2) { MTWLEDEndstop(true); return; }         // force endstop status display on C2
   if(control==254) { MTWLED_feedback=!MTWLED_feedback; return; }
