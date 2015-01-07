@@ -743,7 +743,7 @@ void tp_init()
     #ifdef OHMEYEMENU
     soft_pwm_fan =(unsigned char) constrain(fanSpeed,0,fanLimit);
     #endif
-    #ifndef OPHMEYEMENU
+    #ifndef OHMEYEMENU
     soft_pwm_fan = fanSpeedSoftPwm / 2;
     #endif
     #endif
