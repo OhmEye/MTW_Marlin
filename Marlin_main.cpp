@@ -48,6 +48,10 @@
 #include "pins_arduino.h"
 #include "math.h"
 
+#ifdef OHMEYEMENU
+int fanLimit=FAN_MAX;
+#endif
+
 #ifdef BLINKM
 #include "BlinkM.h"
 #include "Wire.h"

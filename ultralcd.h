@@ -23,7 +23,12 @@
   #define LCD_ALERTMESSAGEPGM(x) lcd_setalertstatuspgm(PSTR(x))
 
   #define LCD_UPDATE_INTERVAL 100
+  #ifdef OHMEYEMENU
+  #define LCD_TIMEOUT_TO_STATUS 60000 // I like my menu to wait 60 seconds before returning to status screen
+  #endif
+  #ifndef OHMEYEMENU
   #define LCD_TIMEOUT_TO_STATUS 15000
+  #endif
 
   #ifdef ULTIPANEL
   void lcd_buttons_update();

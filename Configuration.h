@@ -712,6 +712,8 @@ M242 P<pattern ID> R<red> E<green> B<blue> T<timer> C<command>
       16 RGB 	Slow fill then solid
       17 RGB	Repeating Blink
 */
+#define OHMEYEMENU
+#define FAN_MAX 255
 
 
 #include "Configuration_adv.h"

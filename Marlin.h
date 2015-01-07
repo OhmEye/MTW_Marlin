@@ -22,6 +22,10 @@
 #include "Configuration.h"
 #include "pins.h"
 
+#ifdef OHMEYEMENU
+extern int fanLimit;
+#endif
+
 #ifndef AT90USB
 #define  HardwareSerial_h // trick to disable the standard HWserial
 #endif

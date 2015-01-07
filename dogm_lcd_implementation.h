@@ -26,10 +26,19 @@
 #define EN_A (1<<BLEN_A)
 #define EN_B (1<<BLEN_B)
 #define EN_C (1<<BLEN_C)
+#ifdef OHMEYEMENU // not sure this is at all a proper place for this, but my GLCD clone needs encoder rotation direction reversed
+#define encrot0 0
+#define encrot1 1
+#define encrot2 3
+#define encrot3 2
+
+#endif
+#ifndef OHMEYEMENU
 #define encrot0 0
 #define encrot1 2
 #define encrot2 3
 #define encrot3 1
+#endif
 #define LCD_CLICKED (buttons&EN_C)
 #endif
 

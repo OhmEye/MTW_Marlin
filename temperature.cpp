@@ -740,7 +740,12 @@ void tp_init()
     setPwmFrequency(FAN_PIN, 1); // No prescaling. Pwm frequency = F_CPU/256/8
     #endif
     #ifdef FAN_SOFT_PWM
+    #ifdef OHMEYEMENU
+    soft_pwm_fan =(unsigned char) constrain(fanSpeed,0,fanLimit);
+    #endif
+    #ifndef OPHMEYEMENU
     soft_pwm_fan = fanSpeedSoftPwm / 2;
+    #endif
     #endif
   #endif  
 
@@ -1082,7 +1087,12 @@ ISR(TIMER0_COMPB_vect)
     if(soft_pwm_b > 0) WRITE(HEATER_BED_PIN,1); else WRITE(HEATER_BED_PIN,0);
     #endif
     #ifdef FAN_SOFT_PWM
+    #ifdef OHMEYEMENU
+    soft_pwm_fan =(unsigned char) constrain(fanSpeed,0,fanLimit);
+    #endif
+    #ifndef OHMEYEMENU
     soft_pwm_fan = fanSpeedSoftPwm / 2;
+    #endif
     if(soft_pwm_fan > 0) WRITE(FAN_PIN,1); else WRITE(FAN_PIN,0);
     #endif
   }

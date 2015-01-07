@@ -55,6 +55,18 @@ static void lcd_control_temperature_menu();
 static void lcd_control_temperature_preheat_pla_settings_menu();
 static void lcd_control_temperature_preheat_abs_settings_menu();
 static void lcd_control_motion_menu();
+#ifdef OHMEYEMENU
+static void lcd_ohmeye_menu();
+static void lcd_ohmeye_purge();
+static void lcd_ohmeye_disable();
+static void lcd_ohmeye_all_off();
+static void lcd_ohmeye_home_z();
+static void lcd_ohmeye_home_xy();
+static void lcd_ohmeye_zero_z();
+static void lcd_ohmeye_pause();
+void lcd_ohmeye_sdcard_menu_select();
+#define ENCODER_STEPS_PER_MENU_ITEM 4 // smoother on my particular encoder
+#endif
 #ifdef DOGLCD
 static void lcd_set_contrast();
 #endif
@@ -259,6 +271,9 @@ static void lcd_main_menu()
 {
     START_MENU();
     MENU_ITEM(back, MSG_WATCH, lcd_status_screen);
+#ifdef OHMEYEMENU
+    MENU_ITEM(submenu, MSG_OHMEYE_OHMEYE, lcd_ohmeye_menu);
+#endif
     if (movesplanned() || IS_SD_PRINTING)
     {
         MENU_ITEM(submenu, MSG_TUNE, lcd_tune_menu);
@@ -538,7 +553,12 @@ static void lcd_move_z()
     if (LCD_CLICKED)
     {
         lcd_quick_feedback();
+        #ifdef OHMEYEMENU
+        currentMenu = lcd_ohmeye_menu;
+        #endif
+        #ifndef OHMEYEMENU
         currentMenu = lcd_move_menu_axis;
+        #endif
         encoderPosition = 0;
     }
 }
@@ -928,6 +948,77 @@ menu_edit_type(unsigned long, long5, ftostr5, 0.01)
 		enquecommand_P((PSTR("G28"))); // move all axis home
 	}
 #endif
+
+#ifdef OHMEYEMENU
+static void lcd_ohmeye_menu()
+{
+        move_menu_scale = 1.0;
+        START_MENU();
+        MENU_ITEM(back, MSG_MAIN, lcd_main_menu);
+        #if TEMP_SENSOR_BED != 0
+        MENU_ITEM_EDIT(int3, MSG_OHMEYE_BED, &target_temperature_bed, 0, BED_MAXTEMP - 15);
+        #endif
+        MENU_ITEM(gcode, MSG_OHMEYE_ZERO_Z, PSTR("G1 Z0"));
+        MENU_ITEM(function, MSG_OHMEYE_PURGE, lcd_ohmeye_purge);
+        #ifdef SDSUPPORT
+        if (card.cardOK)
+        {
+          if (card.isFileOpen())
+          {
+            if (card.sdprinting)
+                MENU_ITEM(function, MSG_PAUSE_PRINT, lcd_sdcard_pause);
+            else
+                MENU_ITEM(function, MSG_RESUME_PRINT, lcd_sdcard_resume);
+            MENU_ITEM(function, MSG_STOP_PRINT, lcd_sdcard_stop);
+          }else{
+            MENU_ITEM(submenu, MSG_CARD_MENU, lcd_sdcard_menu);
+            #if SDCARDDETECT < 1
+            MENU_ITEM(gcode, MSG_CNG_SDCARD, PSTR("M21"));  // SD-card changed by user
+            #endif
+          }
+        }else{
+          MENU_ITEM(submenu, MSG_NO_CARD, lcd_sdcard_menu);
+          #if SDCARDDETECT < 1
+            MENU_ITEM(gcode, MSG_INIT_SDCARD, PSTR("M21")); // Manually initialize the SD-card via user interface
+          #endif
+        }
+        #endif
+        MENU_ITEM(function, MSG_OHMEYE_HEAT_PLA, lcd_preheat_pla);
+        MENU_ITEM(function, MSG_OHMEYE_HEAT_ABS, lcd_preheat_abs);
+        MENU_ITEM(submenu, "Move Z", lcd_move_z);
+        MENU_ITEM_EDIT(int3, MSG_OHMEYE_FLOW, &extrudemultiply, 20, 200);
+        MENU_ITEM_EDIT(int3, MSG_OHMEYE_FAN, &fanLimit, 0, 255);
+        MENU_ITEM(gcode, MSG_OHMEYE_SETHOME, PSTR("G92 X0 Y0 Z0"));
+//        MENU_ITEM(gcode, MSG_OHMEYE_SAVE, PSTR("M500"));
+//        MENU_ITEM(gcode, MSG_OHMEYE_LOAD, PSTR("M501"));
+        MENU_ITEM(gcode, MSG_OHMEYE_HOME_Z, PSTR("G28 Z0"));
+        MENU_ITEM(gcode, MSG_OHMEYE_HOME_XY, PSTR("G28 X0 Y0"));
+        MENU_ITEM(function, MSG_OHMEYE_DISABLE, lcd_ohmeye_disable);
+        MENU_ITEM(function, MSG_OHMEYE_ALL_OFF, lcd_ohmeye_all_off);
+        MENU_ITEM(gcode, MSG_OHMEYE_PAUSE, PSTR("M25"));
+        END_MENU();
+}
+
+static void lcd_ohmeye_purge() // extrude 2mm
+{
+        plan_buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS]+2, 7, active_extruder);
+        enquecommand_P(PSTR("G92 E0"));
+}
+
+static void lcd_ohmeye_disable()
+{
+        enquecommand_P(PSTR("M84"));
+        enquecommand_P(PSTR("M106 S0"));
+}
+
+static void lcd_ohmeye_all_off()
+{
+        enquecommand_P(PSTR("M84"));
+        enquecommand_P(PSTR("M104 S0"));
+        enquecommand_P(PSTR("M140 S0"));
+        enquecommand_P(PSTR("M106 S0"));
+}
+#endif // OHMEYEMENU
 
 /** End of menus **/
 

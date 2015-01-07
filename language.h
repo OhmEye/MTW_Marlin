@@ -141,6 +141,31 @@
 	#define MSG_CNG_SDCARD "Change SD-Card"
     #define MSG_ZPROBE_OUT "ZProbe Outside Bed"
     #define MSG_POSITION_UNKNOWN "Home X/Y before Z"
+    
+// OHMEYEMENU LCD messages
+        #define MSG_OHMEYE_OHMEYE "OhmEye"         // Change this if you don't want the custom menu named OhmEye
+        #define MSG_OHMEYE_HOME_Z "Home Z Axis"
+        #define MSG_OHMEYE_ZERO_Z "Move Z to 0"
+        #define MSG_OHMEYE_HOME_Z15 "Home Z 15"
+        #define MSG_OHMEYE_HOME_XY "Home XY Axis"
+        #define MSG_OHMEYE_SETHOME "Set XYZ to 000"
+        #define MSG_OHMEYE_HEAT_PLA "Preheat PLA"
+        #define MSG_OHMEYE_HEAT_ABS "Preheat ABS"
+        #define MSG_OHMEYE_PURGE "Purge Extruder"
+        #define MSG_OHMEYE_FLOW "Flow Rate"
+        #define MSG_OHMEYE_BIG_RETRACT "Change Filament"
+        #define MSG_OHMEYE_SELECT_FILE "Select SD File"
+        #define MSG_OHMEYE_ZERO_POSITION "Zero SD Position"
+        #define MSG_OHMEYE_PRINT "Print SD Now"
+        #define MSG_OHMEYE_ZPRINT "Home Z & Print"
+        #define MSG_OHMEYE_DISABLE "Motors/Fans Off"
+        #define MSG_OHMEYE_ALL_OFF "All Off"
+        #define MSG_OHMEYE_PAUSE "Cancel Printing!"
+        #define MSG_OHMEYE_SAVE "Save to EEPROM"
+        #define MSG_OHMEYE_LOAD "Load from EEPROM"
+        #define MSG_OHMEYE_FAN "Max Fan"
+        #define MSG_OHMEYE_BED "Preheat Bed"
+
 
 // Serial Console Messages
 
