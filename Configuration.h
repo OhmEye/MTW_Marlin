@@ -712,9 +712,10 @@ M242 P<pattern ID> R<red> E<green> B<blue> T<timer> C<command>
       16 RGB 	Slow fill then solid
       17 RGB	Repeating Blink
 */
-#define OHMEYEMENU
+#define OHMEYEMENU // adds a custom menu to the LCD with the functions OhmEye uses all in one place.
+#ifdef OHMEYEMENU
 #define FAN_MAX 255
-
+#endif
 
 #include "Configuration_adv.h"
 #include "thermistortables.h"
