@@ -955,10 +955,6 @@ static void lcd_ohmeye_menu()
         move_menu_scale = 1.0;
         START_MENU();
         MENU_ITEM(back, MSG_MAIN, lcd_main_menu);
-        #if TEMP_SENSOR_BED != 0
-        MENU_ITEM_EDIT(int3, MSG_OHMEYE_BED, &target_temperature_bed, 0, BED_MAXTEMP - 15);
-        #endif
-        MENU_ITEM(gcode, MSG_OHMEYE_ZERO_Z, PSTR("G1 Z0"));
         MENU_ITEM(function, MSG_OHMEYE_PURGE, lcd_ohmeye_purge);
         #ifdef SDSUPPORT
         if (card.cardOK)
@@ -971,7 +967,7 @@ static void lcd_ohmeye_menu()
                 MENU_ITEM(function, MSG_RESUME_PRINT, lcd_sdcard_resume);
             MENU_ITEM(function, MSG_STOP_PRINT, lcd_sdcard_stop);
           }else{
-            MENU_ITEM(submenu, MSG_CARD_MENU, lcd_sdcard_menu);
+            MENU_ITEM(submenu, MSG_OHMEYE_SELECT, lcd_sdcard_menu);
             #if SDCARDDETECT < 1
             MENU_ITEM(gcode, MSG_CNG_SDCARD, PSTR("M21"));  // SD-card changed by user
             #endif
@@ -983,8 +979,13 @@ static void lcd_ohmeye_menu()
           #endif
         }
         #endif
+        MENU_ITEM(gcode, MSG_OHMEYE_PRINT, PSTR("M24"));
+        MENU_ITEM(gcode, MSG_OHMEYE_ZERO_Z, PSTR("G1 Z0"));
+        #if TEMP_SENSOR_BED != 0
+        MENU_ITEM_EDIT(int3, MSG_OHMEYE_BED, &target_temperature_bed, 0, BED_MAXTEMP - 15);
+        #endif
         MENU_ITEM(function, MSG_OHMEYE_HEAT_PLA, lcd_preheat_pla);
-        MENU_ITEM(function, MSG_OHMEYE_HEAT_ABS, lcd_preheat_abs);
+        MENU_ITEM(function, MSG_OHMEYE_HEAT_ABS, lcd_preheat_abs);        
         MENU_ITEM(submenu, "Move Z", lcd_move_z);
         MENU_ITEM_EDIT(int3, MSG_OHMEYE_FLOW, &extrudemultiply, 20, 200);
         MENU_ITEM_EDIT(int3, MSG_OHMEYE_FAN, &fanLimit, 0, 255);
@@ -993,9 +994,10 @@ static void lcd_ohmeye_menu()
 //        MENU_ITEM(gcode, MSG_OHMEYE_LOAD, PSTR("M501"));
         MENU_ITEM(gcode, MSG_OHMEYE_HOME_Z, PSTR("G28 Z0"));
         MENU_ITEM(gcode, MSG_OHMEYE_HOME_XY, PSTR("G28 X0 Y0"));
+        MENU_ITEM(gcode, MSG_OHMEYE_ZERO_SD, PSTR("M26 S0"));
         MENU_ITEM(function, MSG_OHMEYE_DISABLE, lcd_ohmeye_disable);
         MENU_ITEM(function, MSG_OHMEYE_ALL_OFF, lcd_ohmeye_all_off);
-        MENU_ITEM(gcode, MSG_OHMEYE_PAUSE, PSTR("M25"));
+//        MENU_ITEM(gcode, MSG_OHMEYE_PAUSE, PSTR("M25"));
         END_MENU();
 }
 
@@ -1056,8 +1058,19 @@ static void menu_action_sdfile(const char* filename, char* longFilename)
     for(c = &cmd[4]; *c; c++)
         *c = tolower(*c);
     enquecommand(cmd);
+    #ifndef OHMEYEMENU // just select file and not print immediately if using OHMEYEMENU
     enquecommand_P(PSTR("M24"));
+    #endif
+    #ifdef LONGFILENAME // set status to long filename here instead of short filename in CardReader::openFile
+    lcd_setstatus(longFilename);
+    #endif
+    #ifdef OHMEYEMENU
+    encoderPosition = 0;
+    currentMenu = lcd_ohmeye_menu;
+    #endif
+    #ifndef OHMEYEMENU
     lcd_return_to_status();
+    #endif
 }
 static void menu_action_sddirectory(const char* filename, char* longFilename)
 {

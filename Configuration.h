@@ -716,6 +716,8 @@ M242 P<pattern ID> R<red> E<green> B<blue> T<timer> C<command>
 #ifdef OHMEYEMENU
 #define FAN_MAX 255
 #endif
+#define REVERSE_ENCODER
+#define LONGFILENAME
 
 #include "Configuration_adv.h"
 #include "thermistortables.h"

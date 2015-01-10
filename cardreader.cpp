@@ -350,7 +350,9 @@ void CardReader::openFile(char* name,bool read, bool replace_current/*=true*/)
       sdpos = 0;
       
       SERIAL_PROTOCOLLNPGM(MSG_SD_FILE_SELECTED);
+      #ifndef LONGFILENAME // if set we set status to long filename in menu_action_sdfile() instead
       lcd_setstatus(fname);
+      #endif
     }
     else
     {
