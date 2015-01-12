@@ -959,19 +959,10 @@ static void lcd_ohmeye_menu()
         #ifdef SDSUPPORT
         if (card.cardOK)
         {
-          if (card.isFileOpen())
-          {
-            if (card.sdprinting)
-                MENU_ITEM(function, MSG_PAUSE_PRINT, lcd_sdcard_pause);
-            else
-                MENU_ITEM(function, MSG_RESUME_PRINT, lcd_sdcard_resume);
-            MENU_ITEM(function, MSG_STOP_PRINT, lcd_sdcard_stop);
-          }else{
-            MENU_ITEM(submenu, MSG_OHMEYE_SELECT, lcd_sdcard_menu);
-            #if SDCARDDETECT < 1
-            MENU_ITEM(gcode, MSG_CNG_SDCARD, PSTR("M21"));  // SD-card changed by user
-            #endif
-          }
+          MENU_ITEM(submenu, MSG_OHMEYE_SELECT, lcd_sdcard_menu);
+          #if SDCARDDETECT < 1
+          MENU_ITEM(gcode, MSG_CNG_SDCARD, PSTR("M21"));  // SD-card changed by user
+          #endif
         }else{
           MENU_ITEM(submenu, MSG_NO_CARD, lcd_sdcard_menu);
           #if SDCARDDETECT < 1
