@@ -401,7 +401,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 
 // default settings
 
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {80,80,1600,300}  // OhmEye empirical flow based on 3mm with 1.75 filament
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {80,80,1600,295}  // OhmEye empirical flow based on 3mm with 1.75 filament
 //#define DEFAULT_AXIS_STEPS_PER_UNIT   {80,80,1600,460}  // default steps per unit for Ultimaker
 #define DEFAULT_MAX_FEEDRATE          {500, 500, 5, 25}    // (mm/sec)
 #define DEFAULT_MAX_ACCELERATION      {3000,3000,100,10000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
@@ -660,7 +660,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 //                       pattern ID,red,green,blue
 #define mtwled_ready		10,25,50,0	// Marlin Ready
 #define mtwled_startup		10,64,64,64     // Marlin startup
-#define mtwled_temphit  	10,40,0,40      // Hotend is at target temp
+#define mtwled_temphit  	14,40,0,40      // Hotend is at target temp
 #define mtwled_templow		10,0,0,40       // Hotend heater is slightly lower than target temp
 #define mtwled_temphigh  	10,40,0,0	// Hotend heater is slightly higher than target temp
 #define mtwled_heateroff	10,40,40,0	// Hotend heater is off but still hot

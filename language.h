@@ -165,6 +165,7 @@
         #define MSG_OHMEYE_LOAD "Load from EEPROM"
         #define MSG_OHMEYE_FAN "Max Fan"
         #define MSG_OHMEYE_BED "Preheat Bed"
+        #define MSG_OHMEYE_ADDZ "Set Z = Z+10"
 
 
 // Serial Console Messages

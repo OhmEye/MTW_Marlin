@@ -64,6 +64,7 @@ static void lcd_ohmeye_home_z();
 static void lcd_ohmeye_home_xy();
 static void lcd_ohmeye_zero_z();
 static void lcd_ohmeye_pause();
+static void lcd_ohmeye_addz();
 void lcd_ohmeye_sdcard_menu_select();
 #define ENCODER_STEPS_PER_MENU_ITEM 4 // smoother on my particular encoder
 #endif
@@ -986,6 +987,7 @@ static void lcd_ohmeye_menu()
         MENU_ITEM(gcode, MSG_OHMEYE_HOME_Z, PSTR("G28 Z0"));
         MENU_ITEM(gcode, MSG_OHMEYE_HOME_XY, PSTR("G28 X0 Y0"));
         MENU_ITEM(gcode, MSG_OHMEYE_ZERO_SD, PSTR("M26 S0"));
+        MENU_ITEM(function, MSG_OHMEYE_ADDZ, lcd_ohmeye_addz);
         MENU_ITEM(function, MSG_OHMEYE_DISABLE, lcd_ohmeye_disable);
         MENU_ITEM(function, MSG_OHMEYE_ALL_OFF, lcd_ohmeye_all_off);
 //        MENU_ITEM(gcode, MSG_OHMEYE_PAUSE, PSTR("M25"));
@@ -1011,6 +1013,12 @@ static void lcd_ohmeye_all_off()
         enquecommand_P(PSTR("M140 S0"));
         enquecommand_P(PSTR("M106 S0"));
 }
+
+static void lcd_ohmeye_addz()
+{
+        current_position[Z_AXIS]+=10;
+}
+
 #endif // OHMEYEMENU
 
 /** End of menus **/
