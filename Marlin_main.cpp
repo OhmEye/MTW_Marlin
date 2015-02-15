@@ -221,6 +221,10 @@ float extruder_offset[NUM_EXTRUDER_OFFSETS][EXTRUDERS] = {
 #endif
 uint8_t active_extruder = 0;
 int fanSpeed=0;
+#ifdef FANRAMP
+int fanRamp=0;
+unsigned long fanRamp_time = 0;
+#endif
 #ifdef SERVO_ENDSTOPS
   int servo_endstops[] = SERVO_ENDSTOPS;
   int servo_endstop_angles[] = SERVO_ENDSTOP_ANGLES;
@@ -503,6 +507,14 @@ void loop()
 {
 #ifdef MTWLED
   MTWLEDLogic();
+#endif
+#ifdef FANRAMP
+  if(fanSpeed<fanRamp) {
+     if(millis()-fanRamp_time > FANRAMP_TIME) {
+       fanSpeed=constrain(fanSpeed+FANRAMP_STEP,0,fanLimit);
+       fanRamp_time=millis();
+     }
+  }
 #endif
   if(buflen < (BUFSIZE-1))
     get_command();
@@ -1979,14 +1991,29 @@ void process_commands()
     #if defined(FAN_PIN) && FAN_PIN > -1
       case 106: //M106 Fan On
         if (code_seen('S')){
-           fanSpeed=constrain(code_value(),0,255);
+           #ifdef FANRAMP
+           fanRamp=constrain(code_value(),0,fanLimit);
+           if(fanRamp<fanSpeed) // if new fan speed is lower than current, set immediately, otherwise let main loop ramp it up over time
+             fanSpeed=fanRamp;
+           #endif
+           #ifndef FANRAMP
+           fanSpeed=constrain(code_value(),0,fanLimit);
+           #endif
         }
         else {
-          fanSpeed=255;
+          #ifdef FANRAMP
+          fanRamp=fanLimit;
+          #endif
+          #ifndef FANRAMP
+          fanSpeed=fanLimit;
+          #endif
         }
         break;
       case 107: //M107 Fan Off
         fanSpeed = 0;
+        #ifdef FANRAMP
+        fanRamp = 0;
+        #endif
         break;
     #endif //FAN_PIN
     #ifdef BARICUDA

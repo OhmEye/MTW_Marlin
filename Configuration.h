@@ -160,11 +160,11 @@
 // Comment the following line to disable PID and enable bang-bang.
 #define PIDTEMP
 #define BANG_MAX 192 // limits current to nozzle while in bang-bang mode; 255=full current
-#define PID_MAX 224 // limits current to nozzle while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
+#define PID_MAX 255 // limits current to nozzle while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
 #ifdef PIDTEMP
   //#define PID_DEBUG // Sends debug data to the serial port.
   //#define PID_OPENLOOP 1 // Puts PID in open loop. M104/M140 sets the output power from 0 to PID_MAX
-  #define PID_FUNCTIONAL_RANGE 32 // If the temperature difference between the target temperature and the actual temperature
+  #define PID_FUNCTIONAL_RANGE 48 // If the temperature difference between the target temperature and the actual temperature
                                   // is more then PID_FUNCTIONAL_RANGE then the PID will be shut off and the heater will be set to min/max.
   #define PID_INTEGRAL_DRIVE_MAX 255  //limit for the integral term
   #define K1 0.95 //smoothing factor within the PID
@@ -718,6 +718,11 @@ M242 P<pattern ID> R<red> E<green> B<blue> T<timer> C<command>
 #endif
 #define REVERSE_ENCODER
 #define LONGFILENAME
+#define FANRAMP
+#ifdef FANRAMP
+#define FANRAMP_STEP 12 // rate to change fan speed in duty cycle per FANRAMP_TIME
+#define FANRAMP_TIME 1000 // 1 second
+#endif
 
 #include "Configuration_adv.h"
 #include "thermistortables.h"

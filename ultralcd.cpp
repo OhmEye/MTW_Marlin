@@ -425,7 +425,7 @@ static void lcd_tune_menu()
 #if TEMP_SENSOR_BED != 0
     MENU_ITEM_EDIT(int3, MSG_BED, &target_temperature_bed, 0, BED_MAXTEMP - 15);
 #endif
-    MENU_ITEM_EDIT(int3, MSG_FAN_SPEED, &fanSpeed, 0, 255);
+    MENU_ITEM_EDIT(int3, MSG_FAN_SPEED, &fanSpeed, 0, fanLimit);
     MENU_ITEM_EDIT(int3, MSG_FLOW, &extrudemultiply, 10, 999);
 
 #ifdef BABYSTEPPING
@@ -671,7 +671,7 @@ static void lcd_control_temperature_menu()
 #if TEMP_SENSOR_BED != 0
     MENU_ITEM_EDIT(int3, MSG_BED, &target_temperature_bed, 0, BED_MAXTEMP - 15);
 #endif
-    MENU_ITEM_EDIT(int3, MSG_FAN_SPEED, &fanSpeed, 0, 255);
+    MENU_ITEM_EDIT(int3, MSG_FAN_SPEED, &fanSpeed, 0, fanLimit);
 #ifdef AUTOTEMP
     MENU_ITEM_EDIT(bool, MSG_AUTOTEMP, &autotemp_enabled);
     MENU_ITEM_EDIT(float3, MSG_MIN, &autotemp_min, 0, HEATER_0_MAXTEMP - 15);
@@ -982,12 +982,12 @@ static void lcd_ohmeye_menu()
         MENU_ITEM_EDIT(int3, MSG_OHMEYE_FLOW, &extrudemultiply, 20, 200);
         MENU_ITEM_EDIT(int3, MSG_OHMEYE_FAN, &fanLimit, 0, 255);
         MENU_ITEM(gcode, MSG_OHMEYE_SETHOME, PSTR("G92 X0 Y0 Z0"));
+        MENU_ITEM(function, MSG_OHMEYE_ADDZ, lcd_ohmeye_addz);
 //        MENU_ITEM(gcode, MSG_OHMEYE_SAVE, PSTR("M500"));
 //        MENU_ITEM(gcode, MSG_OHMEYE_LOAD, PSTR("M501"));
         MENU_ITEM(gcode, MSG_OHMEYE_HOME_Z, PSTR("G28 Z0"));
         MENU_ITEM(gcode, MSG_OHMEYE_HOME_XY, PSTR("G28 X0 Y0"));
         MENU_ITEM(gcode, MSG_OHMEYE_ZERO_SD, PSTR("M26 S0"));
-        MENU_ITEM(function, MSG_OHMEYE_ADDZ, lcd_ohmeye_addz);
         MENU_ITEM(function, MSG_OHMEYE_DISABLE, lcd_ohmeye_disable);
         MENU_ITEM(function, MSG_OHMEYE_ALL_OFF, lcd_ohmeye_all_off);
 //        MENU_ITEM(gcode, MSG_OHMEYE_PAUSE, PSTR("M25"));
