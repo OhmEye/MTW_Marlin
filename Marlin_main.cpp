@@ -509,10 +509,10 @@ void loop()
   MTWLEDLogic();
 #endif
 #ifdef FANRAMP
-  if(fanSpeed<fanRamp) {
-     if(millis()-fanRamp_time > FANRAMP_TIME) {
-       fanSpeed=constrain(fanSpeed+FANRAMP_STEP,0,fanLimit);
-       fanRamp_time=millis();
+  if(fanSpeed<fanRamp) { // check if fan is up to speed
+     if(millis()-fanRamp_time > FANRAMP_TIME) { // if not up to speed, check if it's too soon to update speed
+       fanSpeed=constrain(fanSpeed+FANRAMP_STEP,0,fanLimit); // increase fan speed by one step
+       fanRamp_time=millis(); // reset timer
      }
   }
 #endif

@@ -720,8 +720,8 @@ M242 P<pattern ID> R<red> E<green> B<blue> T<timer> C<command>
 #define LONGFILENAME
 #define FANRAMP
 #ifdef FANRAMP
-#define FANRAMP_STEP 12 // rate to change fan speed in duty cycle per FANRAMP_TIME
-#define FANRAMP_TIME 1000 // 1 second
+#define FANRAMP_STEP 12 // increment to change fan speed per FANRAMP_TIME
+#define FANRAMP_TIME 1000 // milliseconds
 #endif
 
 #include "Configuration_adv.h"
